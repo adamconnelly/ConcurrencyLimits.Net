@@ -7,6 +7,11 @@ namespace ConcurrencyLimits.Net.Core
     /// </summary>
     public class OperationInfo
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OperationInfo" /> class.
+        /// </summary>
+        /// <param name="startTime">The start time of the operation.</param>
+        /// <param name="canProcess">true if the operation can be processed, false otherwise.</param>
         public OperationInfo(DateTime startTime, bool canProcess)
         {
             this.StartTime = startTime;

@@ -4,11 +4,17 @@
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
 
+    /// <summary>
+    /// An api controller used for testing the limits.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        // GET api/values
+        /// <summary>
+        /// Waits for a delay (to make it easy to breach the limit) and then returns some values.
+        /// </summary>
+        /// <returns>Some values.</returns>
         [HttpGet]
         public async Task<IEnumerable<string>> Get()
         {
