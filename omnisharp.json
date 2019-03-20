@@ -1,0 +1,10 @@
+{
+    "RoslynExtensionsOptions": {
+        "EnableAnalyzersSupport": true,
+        "LocationPaths": [
+        ]
+    },
+    "MsBuild": {
+        "UseLegacySdkResolver": true
+    }
+}

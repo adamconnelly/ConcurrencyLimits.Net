@@ -10,10 +10,10 @@ namespace ConcurrencyLimits.Net.AspNetCore
     public class LimiterMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly ILimiter limiter;
+        private readonly IAlternativeLimiter limiter;
         private readonly ILogger<LimiterMiddleware> logger;
 
-        public LimiterMiddleware(RequestDelegate next, ILimiter limiter, ILogger<LimiterMiddleware> logger)
+        public LimiterMiddleware(RequestDelegate next, IAlternativeLimiter limiter, ILogger<LimiterMiddleware> logger)
         {
             this.next = next;
             this.limiter = limiter;
@@ -22,16 +22,9 @@ namespace ConcurrencyLimits.Net.AspNetCore
 
         public async Task Invoke(HttpContext context)
         {
-            var (canProceed, listener) = this.limiter.Acquire();
-            if (canProceed)
+            if (!(await this.limiter.TryProcess(() => this.next(context))))
             {
-                await this.next(context);
-                
-                listener.Success();
-            }
-            else
-            {
-                logger.LogError("Limit exceeded. Request has been blocked. Current state '{LimiterState}'", this.limiter.StateDescription);
+                logger.LogError("Limit exceeded. Request has been blocked.");
 
                 context.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
                 await context.Response.WriteAsync("Too many requests");

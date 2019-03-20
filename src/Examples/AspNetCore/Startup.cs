@@ -1,29 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ConcurrencyLimits.Net.AspNetCore;
-using ConcurrencyLimits.Net.Core;
-using ConcurrencyLimits.Net.Core.Limiters;
-using ConcurrencyLimits.Net.Core.Limits;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-namespace AspNetCore
+﻿namespace AspNetCore
 {
+    using ConcurrencyLimits.Net.AspNetCore;
+    using ConcurrencyLimits.Net.Core;
+    using ConcurrencyLimits.Net.Core.Limiters;
+    using ConcurrencyLimits.Net.Core.Limits;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+
     public class Startup
     {
-        private IServiceCollection services;
-
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -31,8 +22,7 @@ namespace AspNetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            this.services = services;
-            services.AddSingleton(typeof(ILimiter), new SimpleLimiter(new FixedLimit(5)));
+            services.AddSingleton(typeof(IAlternativeLimiter), new AlternativeLimiter(new AlternativeFixedLimit(5)));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -50,9 +40,8 @@ namespace AspNetCore
                 app.UseHsts();
             }
 
-            app.UseConcurrencyLimit(services);
+            app.UseConcurrencyLimit();
 
-            //app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

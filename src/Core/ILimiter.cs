@@ -6,6 +6,11 @@ namespace ConcurrencyLimits.Net.Core
     public interface ILimiter
     {
         /// <summary>
+        /// Gets a description of the current state of the limiter.
+        /// </summary>
+        string StateDescription { get; }
+
+        /// <summary>
         /// Attempts to acquire the ability to process a request.
         /// </summary>
         /// <returns>
@@ -15,10 +20,5 @@ namespace ConcurrencyLimits.Net.Core
         (bool canProceed, IListener listener) Acquire();
 
         void Release();
-
-        /// <summary>
-        /// Gets a description of the current state of the limiter.
-        /// </summary>
-        string StateDescription { get; }
     }
 }
