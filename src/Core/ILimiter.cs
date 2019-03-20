@@ -1,24 +1,22 @@
 namespace ConcurrencyLimits.Net.Core
 {
+    using System;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Enforces a concurrency limit.
     /// </summary>
     public interface ILimiter
     {
         /// <summary>
-        /// Gets a description of the current state of the limiter.
+        /// Attempts to execute the specified operation if the limit has not been reached.
         /// </summary>
-        string StateDescription { get; }
-
-        /// <summary>
-        /// Attempts to acquire the ability to process a request.
-        /// </summary>
+        /// <param name="operation">
+        /// The operation to execute.
+        /// </param>
         /// <returns>
-        /// canProceed - true when the request can be processed, false otherwise;
-        /// listener - used to notify the limiter when processing is complete.
+        /// True if the operation was executed, false otherwise.
         /// </returns>
-        (bool canProceed, IListener listener) Acquire();
-
-        void Release();
+        Task<bool> TryProcess(Func<Task> operation);
     }
 }

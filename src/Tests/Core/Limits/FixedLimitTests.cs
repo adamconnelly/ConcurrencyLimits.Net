@@ -9,7 +9,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limits
         public void NotifyStart_IndicatesOperationCanProceed()
         {
             // Arrange
-            var limit = new AlternativeFixedLimit(5);
+            var limit = new FixedLimit(5);
 
             // Act
             var info = limit.NotifyStart();
@@ -22,7 +22,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limits
         public void NotifyStart_IndicatesOperationCannotProceedWhenLimitBreached()
         {
             // Arrange
-            var limit = new AlternativeFixedLimit(3);
+            var limit = new FixedLimit(3);
             limit.NotifyStart();
             limit.NotifyStart();
             limit.NotifyStart();
@@ -41,7 +41,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limits
             // of 3, and we notify the start of 3 operations.
 
             // Arrange
-            var limit = new AlternativeFixedLimit(3);
+            var limit = new FixedLimit(3);
             limit.NotifyStart();
             limit.NotifyStart();
 
@@ -56,7 +56,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limits
         public void NotifyEnd_AllowsAnotherRequestToBeProcessed()
         {
             // Arrange
-            var limit = new AlternativeFixedLimit(2);
+            var limit = new FixedLimit(2);
             limit.NotifyStart();
             var info = limit.NotifyStart();
 

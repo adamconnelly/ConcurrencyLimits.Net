@@ -7,15 +7,15 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
     using Moq;
     using Xunit;
 
-    public class AlternativeLimiterTests
+    public class LimiterTests
     {
-        private readonly Mock<IAlternativeLimit> limit;
-        private readonly AlternativeLimiter limiter;
+        private readonly Mock<ILimit> limit;
+        private readonly SimpleLimiter limiter;
 
-        public AlternativeLimiterTests()
+        public LimiterTests()
         {
-            this.limit = new Mock<IAlternativeLimit>();
-            this.limiter = new AlternativeLimiter(this.limit.Object);
+            this.limit = new Mock<ILimit>();
+            this.limiter = new SimpleLimiter(this.limit.Object);
         }
 
         [Fact]

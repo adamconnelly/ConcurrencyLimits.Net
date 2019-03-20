@@ -2,6 +2,9 @@ namespace ConcurrencyLimits.Net.Core
 {
     using System;
 
+    /// <summary>
+    /// Provides information about an in-process operation.
+    /// </summary>
     public class OperationInfo
     {
         public OperationInfo(DateTime startTime, bool canProcess)

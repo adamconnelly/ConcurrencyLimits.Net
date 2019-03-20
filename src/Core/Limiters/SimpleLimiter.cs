@@ -1,45 +1,34 @@
-using System;
-using System.Threading;
-using ConcurrencyLimits.Net.Core.Limits;
-
 namespace ConcurrencyLimits.Net.Core.Limiters
 {
+    using System;
+    using System.Threading.Tasks;
+
     public class SimpleLimiter : ILimiter
     {
-        private int inFlight;
-        private ILimit limit;
+        private readonly ILimit limit;
 
         public SimpleLimiter(ILimit limit)
         {
             this.limit = limit;
         }
 
-        public int InFlight { get { return this.inFlight; } }
-
-        public string StateDescription => $"InFlight: {InFlight}; Limit: {this.limit.Limit}";
-
-        /// <inheritdoc />
-        public (bool canProceed, IListener listener) Acquire()
+        public async Task<bool> TryProcess(Func<Task> operation)
         {
-            var newInflight = Interlocked.Increment(ref this.inFlight);
-            bool canProceed = newInflight <= this.limit.Limit;
-            
-            // TODO: Rethink how all this hangs together, and maybe return no-op listener if can't proceed
-            if (!canProceed) {
-                this.Release();
+            var operationInfo = this.limit.NotifyStart();
+
+            try
+            {
+                if (operationInfo.CanProcess)
+                {
+                    await operation();
+                }
+
+                return operationInfo.CanProcess;
             }
-
-            return (canProceed, new Listener(this));
-        }
-
-        public void Release()
-        {
-            Interlocked.Decrement(ref this.inFlight);
-        }
-
-        public override string ToString()
-        {
-            return StateDescription;
+            finally
+            {
+                this.limit.NotifyEnd(operationInfo);
+            }
         }
     }
 }

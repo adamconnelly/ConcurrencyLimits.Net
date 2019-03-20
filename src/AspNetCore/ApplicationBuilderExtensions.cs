@@ -1,12 +1,7 @@
-﻿using System;
-using ConcurrencyLimits.Net.Core;
-using ConcurrencyLimits.Net.Core.Limiters;
-using ConcurrencyLimits.Net.Core.Limits;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ConcurrencyLimits.Net.AspNetCore
+﻿namespace ConcurrencyLimits.Net.AspNetCore
 {
+    using Microsoft.AspNetCore.Builder;
+
     public static class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseConcurrencyLimit(this IApplicationBuilder app)
