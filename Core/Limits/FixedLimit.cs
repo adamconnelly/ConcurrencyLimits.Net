@@ -21,6 +21,14 @@ namespace ConcurrencyLimits.Net.Core.Limits
         }
 
         /// <summary>
+        /// Gets the limit.
+        /// </summary>
+        public int Limit
+        {
+            get { return this.limit; }
+        }
+
+        /// <summary>
         /// Notifies the limit of the intention to start a new operation.
         /// </summary>
         /// <returns>

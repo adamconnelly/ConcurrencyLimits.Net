@@ -35,7 +35,9 @@
         /// <param name="services">The services collection.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(typeof(ILimiter), new SimpleLimiter(new FixedLimit(5)));
+            services.AddConcurrencyLimits()
+                .UseSimpleLimiter()
+                .WithFixedLimit(5);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
