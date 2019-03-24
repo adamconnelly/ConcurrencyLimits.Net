@@ -23,7 +23,8 @@ namespace ConcurrencyLimits.Net.AspNetCore.Configuration
         /// <inheritdoc/>
         public void WithFixedLimit(int limit)
         {
-            this.serviceCollection.AddSingleton<ILimit>(p => new FixedLimit(limit));
+            this.serviceCollection.AddSingleton<ILimit>(
+                p => new FixedLimit(limit, p.GetService<IMetricsRegistry>()));
         }
     }
 }

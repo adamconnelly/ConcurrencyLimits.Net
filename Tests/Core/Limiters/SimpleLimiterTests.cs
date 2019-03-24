@@ -7,22 +7,24 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
     using Moq;
     using Xunit;
 
-    public class LimiterTests
+    public class SimpleLimiterTests
     {
         private readonly Mock<ILimit> limit;
+        private readonly Mock<IMetricsRegistry> metricsRegistry;
         private readonly SimpleLimiter limiter;
 
-        public LimiterTests()
+        public SimpleLimiterTests()
         {
             this.limit = new Mock<ILimit>();
-            this.limiter = new SimpleLimiter(this.limit.Object);
+            this.metricsRegistry = new Mock<IMetricsRegistry> { DefaultValue = DefaultValue.Mock };
+            this.limiter = new SimpleLimiter(this.limit.Object, this.metricsRegistry.Object);
         }
 
         [Fact]
         public async Task TryProcess_ExecutesOperation()
         {
             // Arrange
-            this.limit.Setup(l => l.NotifyStart()).Returns(new OperationInfo(DateTime.Now, true));
+            this.AllowExecution();
 
             var hasProcessed = false;
 
@@ -37,7 +39,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
         public async Task TryProcess_DoesNotProcessOperationIfLimitBreached()
         {
             // Arrange
-            this.limit.Setup(l => l.NotifyStart()).Returns(new OperationInfo(DateTime.Now, false));
+            this.DenyExecution();
 
             var hasProcessed = false;
 
@@ -52,8 +54,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
         public async Task TryProcess_CallsNotifyEnd()
         {
             // Arrange
-            var info = new OperationInfo(DateTime.Now, true);
-            this.limit.Setup(l => l.NotifyStart()).Returns(info);
+            var info = this.AllowExecution();
 
             // Act
             await this.TryProcess(() => { });
@@ -66,8 +67,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
         public async Task TryProcess_CallsNotifyEndWhenLimitIsBreached()
         {
             // Arrange
-            var info = new OperationInfo(DateTime.Now, false);
-            this.limit.Setup(l => l.NotifyStart()).Returns(info);
+            var info = this.DenyExecution();
 
             // Act
             await this.TryProcess(() => { });
@@ -80,8 +80,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
         public async Task TryProcess_CallsNotifyEndWhenOperationThrowsException()
         {
             // Arrange
-            var info = new OperationInfo(DateTime.Now, true);
-            this.limit.Setup(l => l.NotifyStart()).Returns(info);
+            var info = this.AllowExecution();
 
             // Act
             try
@@ -101,7 +100,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
         public async Task TryProcess_IndicatesWhenOperationProcessed()
         {
             // Arrange
-            this.limit.Setup(l => l.NotifyStart()).Returns(new OperationInfo(DateTime.Now, true));
+            this.AllowExecution();
 
             // Act
             var processed = await this.TryProcess(() => { });
@@ -114,7 +113,7 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
         public async Task TryProcess_IndicatesWhenOperationNotProcessed()
         {
             // Arrange
-            this.limit.Setup(l => l.NotifyStart()).Returns(new OperationInfo(DateTime.Now, false));
+            this.DenyExecution();
 
             // Act
             var processed = await this.TryProcess(() => { });
@@ -130,6 +129,22 @@ namespace ConcurrencyLimits.Net.Tests.Core.Limiters
                 operation();
                 return Task.FromResult(0);
             });
+        }
+
+        private OperationInfo AllowExecution()
+        {
+            var info = new OperationInfo(DateTime.Now, true);
+            this.limit.Setup(l => l.NotifyStart()).Returns(info);
+
+            return info;
+        }
+
+        private OperationInfo DenyExecution()
+        {
+            var info = new OperationInfo(DateTime.Now, false);
+            this.limit.Setup(l => l.NotifyStart()).Returns(info);
+
+            return info;
         }
     }
 }

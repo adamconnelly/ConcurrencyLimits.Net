@@ -1,7 +1,9 @@
-namespace ConcurrencyLimits.Net.AspNetCore.Configuration
+namespace ConcurrencyLimits.Net.Tests.AspNetCore.Configuration
 {
+    using ConcurrencyLimits.Net.AspNetCore.Configuration;
     using ConcurrencyLimits.Net.Core;
     using ConcurrencyLimits.Net.Core.Limits;
+    using ConcurrencyLimits.Net.Core.Metrics;
     using Microsoft.Extensions.DependencyInjection;
     using Xunit;
 
@@ -12,6 +14,7 @@ namespace ConcurrencyLimits.Net.AspNetCore.Configuration
         {
             // Arrange
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton<IMetricsRegistry>(p => new DefaultMetricsRegistry());
             var configurer = new LimitConfigurer(serviceCollection);
 
             // Act
