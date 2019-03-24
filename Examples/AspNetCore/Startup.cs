@@ -4,11 +4,13 @@
     using ConcurrencyLimits.Net.Core;
     using ConcurrencyLimits.Net.Core.Limiters;
     using ConcurrencyLimits.Net.Core.Limits;
+    using ConcurrencyLimits.Net.Prometheus;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Prometheus;
 
     /// <summary>
     /// The main configuration for the web application.
@@ -39,6 +41,8 @@
                 .UseSimpleLimiter()
                 .WithFixedLimit(5);
 
+            services.AddSingleton<IMetricsRegistry, PrometheusMetricsRegistry>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -57,6 +61,9 @@
             app.UseConcurrencyLimit();
 
             app.UseMvc();
+
+            var metricServer = new KestrelMetricServer(port: 5002);
+            metricServer.Start();
         }
     }
 }

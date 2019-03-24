@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="3.0.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -20,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ConcurrencyLimits.Net.Core.csproj" />
     <ProjectReference Include="..\..\AspNetCore\ConcurrencyLimits.Net.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Prometheus\ConcurrencyLimits.Net.Prometheus.csproj" />
   </ItemGroup>
 
 </Project>
