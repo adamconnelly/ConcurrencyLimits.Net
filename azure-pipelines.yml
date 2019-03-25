@@ -12,10 +12,20 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-# TODO: Get this to build all our projects
 steps:
 - task: DotNetCoreCLI@2
+  displayName: 'Build Projects'
+  inputs:
+    command: build
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: 'Run Unit Tests'
   inputs:
     command: test
     projects: 'Tests/ConcurrencyLimits.Net.Tests.csproj'
     arguments: '--configuration $(buildConfiguration)'
+- script: sudo npm install -g markdownlint-cli
+  displayName: 'Install markdownlint'
+- script: markdownlint -c .markdownlint.yaml "**/*.md"
+  displayName: 'Run markdownlint'
