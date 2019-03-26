@@ -1,0 +1,6 @@
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+    - job_name: "concurrency-limits"
+      static_configs:
+      - targets: ["host.docker.internal:5002"]

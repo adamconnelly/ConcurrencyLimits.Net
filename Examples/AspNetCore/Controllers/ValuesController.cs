@@ -18,7 +18,7 @@
         [HttpGet]
         public async Task<IEnumerable<string>> Get()
         {
-            await Task.Delay(4000);
+            await Task.Delay(500);
 
             return new string[] { "value1", "value2" };
         }

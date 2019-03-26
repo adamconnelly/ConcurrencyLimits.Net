@@ -39,7 +39,7 @@
         {
             services.AddConcurrencyLimits()
                 .UseSimpleLimiter()
-                .WithFixedLimit(5);
+                .WithFixedLimit(10);
 
             services.AddSingleton<IMetricsRegistry, PrometheusMetricsRegistry>();
 
